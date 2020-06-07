@@ -1,0 +1,19 @@
+spring:
+  jpa:
+    show-sql: false
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost/photobook
+    username: prod
+    password: prod
+    driverClassName: org.postgresql.Driver
+  liquibase:
+    changeLog: classpath:/db/changelog/db.changelog-master.xml
+    enabled: true
+jwt:
+  secret: IJLyzrPMwhK3vVwiIrJOO9vC2JmMQVCFmlnnFlLJ29mmYfvLjCahTTftjiW2smjhB6UTBXPJrxbGPus7fVLD8MD4VTXBbSOtcxvB1ENK4GReSyclHKFDj9sx2iwjAgrSAiKOcc9aFniA8zAgRJwUdkpPpv96yMIbZ1LA4tVUkY2t9bfRjIMaKkE8MI40qlYUWCNrNaQy6q25GKk8mnWNv3hOd22MoeoPKu5joXlnr4yVS6OyazVdT3eRzJQ25b7GrRT22BSei014D5oFbfyykK9g1UMAg6wVBmNfCLm3pRtffx77RcdzgQwSutyB4hlItdU0oSSuQ
+  expiration: 86400000

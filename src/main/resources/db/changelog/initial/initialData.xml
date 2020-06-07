@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="inserting_roles" author="shane.sturgeon">
+        <insert tableName="roles" schemaName="content">
+            <column name="id"  valueComputed="(nextval('content.role_id'))" />
+            <column name="name" value="USER" />
+        </insert>
+        <insert tableName="roles" schemaName="content">
+            <column name="id"  valueComputed="(nextval('content.role_id'))" />
+            <column name="name" value="CREATOR" />
+        </insert>
+        <insert tableName="roles" schemaName="content">
+            <column name="id"  valueComputed="(nextval('content.role_id'))" />
+            <column name="name" value="ADMIN" />
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
