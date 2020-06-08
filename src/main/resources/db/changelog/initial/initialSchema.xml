@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet author="shane.sturgeon" id="create-schema-content">
@@ -13,10 +13,10 @@
     <changeSet id="tables-for-authentication" author="shane.sturgeon">
         <createTable tableName="users" schemaName="content">
             <column name="id" type="bigint">
-                <constraints nullable="false"  primaryKey="true"/>
+                <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="username" type="text">
-                <constraints nullable="false" unique="true" />
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="email" type="text">
                 <constraints nullable="false" unique="true"/>
@@ -37,15 +37,30 @@
 
         <createTable tableName="user_roles" schemaName="content">
             <column name="user_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="user_role_user_id" referencedTableSchemaName="content" referencedTableName="users" referencedColumnNames="id"/>
+                <constraints nullable="false" foreignKeyName="user_role_user_id" referencedTableSchemaName="content"
+                             referencedTableName="users" referencedColumnNames="id"/>
             </column>
-            <column name="role_id"  type="bigint">
-                <constraints nullable="false" foreignKeyName="user_role_role_id" referencedTableSchemaName="content" referencedTableName="roles" referencedColumnNames="id"/>
+            <column name="role_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="user_role_role_id" referencedTableSchemaName="content"
+                             referencedTableName="roles" referencedColumnNames="id"/>
             </column>
         </createTable>
 
-        <createSequence sequenceName="user_id" schemaName="content" incrementBy="1" startValue="1"  />
-        <createSequence sequenceName="role_id" schemaName="content" incrementBy="1" startValue="1" />
+        <createSequence sequenceName="user_id" schemaName="content" incrementBy="1" startValue="1"/>
+        <createSequence sequenceName="role_id" schemaName="content" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="category_table" author="shane.sturgeon">
+        <createTable tableName="category" schemaName="content">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="text">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="text"/>
+        </createTable>
+        <createSequence sequenceName="category_id" schemaName="content" incrementBy="1" startValue="1" />
     </changeSet>
 
 </databaseChangeLog>

@@ -14,7 +14,7 @@ public class User {
     private String email;
     private String password;
     private String username;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(schema = "content", name = "user_role")
     private List<Role> roles;
 

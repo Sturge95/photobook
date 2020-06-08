@@ -2,7 +2,7 @@ package com.sturgeon.photobook.config;
 
 import com.sturgeon.photobook.security.AuthEntryPointJwt;
 import com.sturgeon.photobook.security.AuthTokenFilter;
-import com.sturgeon.photobook.service.UserServiceImpl;
+import com.sturgeon.photobook.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
