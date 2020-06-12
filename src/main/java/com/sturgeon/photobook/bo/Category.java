@@ -7,8 +7,8 @@ import javax.persistence.*;
 public class Category {
 
     @Id
-    @GeneratedValue(generator = "content.user_id", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "user_id", schema = "content", sequenceName = "content.user_id", allocationSize = 1)
+    @GeneratedValue(generator = "content.category_id", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "category_id", schema = "content", sequenceName = "content.category_id", allocationSize = 1)
     private Long id;
     private String name;
     private String description;
