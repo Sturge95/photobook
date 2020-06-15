@@ -14,6 +14,17 @@ spring:
   liquibase:
     changeLog: classpath:/db/changelog/db.changelog-master.xml
     enabled: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 30MB
+      file-size-threshold: 2KB
+      max-request-size: 30MB
 jwt:
   secret: bezKoderSecretKey
   expiration: 86400000
+
+s3:
+  buckets:
+    compressed: photobook-compressed
+    uncompressed: photobook-uncompressed
