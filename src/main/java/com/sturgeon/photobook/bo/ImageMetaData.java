@@ -1,8 +1,19 @@
 package com.sturgeon.photobook.bo;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Table(schema = "content", name = "image_metadata")
+@Entity
 public class ImageMetaData {
+
+    @Id
+    @GeneratedValue(generator = "content.image_metadata_id", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "image_metadata_id", schema = "content", sequenceName = "image_metadata_id", allocationSize = 1)
+    private Long id;
+    @OneToOne
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    private Image image;
     private String flash;
     private String digitalZoom;
     private String photoMode;
@@ -159,5 +170,21 @@ public class ImageMetaData {
 
     public String getBaseIso() {
         return baseIso;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
     }
 }

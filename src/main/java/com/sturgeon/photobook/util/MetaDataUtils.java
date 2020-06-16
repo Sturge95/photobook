@@ -2,10 +2,17 @@ package com.sturgeon.photobook.util;
 
 import com.sturgeon.photobook.bo.ImageMetaData;
 import com.sturgeon.photobook.constants.MetaDataConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 public class MetaDataUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(MetaDataUtils.class);
 
     public static ImageMetaData createMeteDataObject(Map<String, String> imageData) {
         ImageMetaData imageMetaData = new ImageMetaData();
@@ -13,7 +20,6 @@ public class MetaDataUtils {
         imageMetaData.setDigitalZoom(getFieldData(imageData, MetaDataConstants.DIGITAL_ZOOM));
         imageMetaData.setPhotoMode(getFieldData(imageData, MetaDataConstants.PHOTO_MODE));
         imageMetaData.setFocalLength(getFieldData(imageData, MetaDataConstants.FOCAL_LENGTH));
-        imageMetaData.setDateTime(getFieldData(imageData, MetaDataConstants.DATE_TAKEN));
         imageMetaData.setShutterSpeed(getFieldData(imageData, MetaDataConstants.SHUTTER_SPEED));
         imageMetaData.setLens(getFieldData(imageData, MetaDataConstants.LENS));
         imageMetaData.setFileExtension(getFieldData(imageData, MetaDataConstants.EXTENSION));
@@ -26,6 +32,7 @@ public class MetaDataUtils {
         imageMetaData.setCompression(getFieldData(imageData, MetaDataConstants.COMPRESSION));
         imageMetaData.setBaseIso(getFieldData(imageData, MetaDataConstants.BASE_IDO));
         imageMetaData.setIso(getFieldData(imageData, MetaDataConstants.ISO_SPEED));
+        imageMetaData.setDateTime(getFieldDateData(imageData, MetaDataConstants.DATE_TAKEN));
 
         return imageMetaData;
     }
@@ -33,6 +40,19 @@ public class MetaDataUtils {
     private static String getFieldData(Map<String, String> imageData, String metaTag) {
         if (imageData.containsKey(metaTag)) {
             return imageData.get(metaTag);
+        }
+        return null;
+    }
+
+    private static Date getFieldDateData(Map<String, String> imageData, String metaTag) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
+        if (imageData.containsKey(metaTag)) {
+            String dateTag = imageData.get(metaTag);
+            try {
+                return simpleDateFormat.parse(dateTag);
+            } catch (ParseException e) {
+                logger.error("Could not parse date for tag " + metaTag, e);
+            }
         }
         return null;
     }

@@ -60,6 +60,62 @@
             </column>
             <column name="description" type="text"/>
         </createTable>
-        <createSequence sequenceName="category_id" schemaName="content" incrementBy="1" startValue="1" />
+        <createSequence sequenceName="category_id" schemaName="content" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="image-tables" author="shane.sturgeon">
+        <createTable tableName="image" schemaName="content">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text"/>
+        </createTable>
+
+        <createTable tableName="image_category" schemaName="content">
+            <column name="image_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="image_category_image_id"
+                             referencedTableSchemaName="content"
+                             referencedTableName="image" referencedColumnNames="id"/>
+            </column>
+            <column name="category_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="image_category_category_id"
+                             referencedTableSchemaName="content"
+                             referencedTableName="roles" referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="image_metadata" schemaName="content">
+            <column name="id" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="flash" type="text"/>
+            <column name="digital_zoom" type="text"/>
+            <column name="photo_mode" type="text"/>
+            <column name="focal_length" type="text"/>
+            <column name="date_time" type="timestamp"/>
+            <column name="shutter_speed" type="timestamp"/>
+            <column name="lens" type="timestamp"/>
+            <column name="file_extension" type="timestamp"/>
+            <column name="camera_make" type="timestamp"/>
+            <column name="orientation" type="timestamp"/>
+            <column name="height" type="timestamp"/>
+            <column name="width" type="timestamp"/>
+            <column name="camera_model" type="timestamp"/>
+            <column name="aperture" type="timestamp"/>
+            <column name="compression" type="timestamp"/>
+            <column name="iso" type="timestamp"/>
+            <column name="baseIso" type="timestamp"/>
+            <column name="image_id" type="bigInt">
+                <constraints foreignKeyName="content_image_metadata_image" referencedTableSchemaName="content"
+                             referencedTableName="image" referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createSequence sequenceName="image_id" schemaName="content" incrementBy="1" startValue="1"/>
+        <createSequence sequenceName="image_metadata_id" schemaName="content" incrementBy="1" startValue="1"/>
+
     </changeSet>
 </databaseChangeLog>

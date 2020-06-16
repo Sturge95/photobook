@@ -43,7 +43,7 @@ public class ImageServiceImpl implements ImageService {
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(streamLength);
 
-            s3Client.putObject(unCompressedBucket, "fileName", image, objectMetadata);
+            //s3Client.putObject(unCompressedBucket, "fileName", image, objectMetadata);
             ImageMetaData imageMetaData = MetaDataUtils.createMeteDataObject(imageData);
         } catch (IOException | ImageProcessingException e) {
             logger.error("could not get bytes from image", e);
