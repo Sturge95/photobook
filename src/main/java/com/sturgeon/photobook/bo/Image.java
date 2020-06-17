@@ -13,6 +13,7 @@ public class Image {
     private Long id;
     private String name;
     private String description;
+    private String fileName;
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(schema = "content", name = "image_category")
     private List<Category> categories;
@@ -49,4 +50,11 @@ public class Image {
         this.categories = categories;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 }

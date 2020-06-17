@@ -2,8 +2,10 @@ package com.sturgeon.photobook.util;
 
 import com.sturgeon.photobook.bo.ImageMetaData;
 import com.sturgeon.photobook.constants.MetaDataConstants;
+import liquibase.util.file.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -55,5 +57,15 @@ public class MetaDataUtils {
             }
         }
         return null;
+    }
+
+    public static String getFileName(MultipartFile image, String desiredName) {
+        String extension = FilenameUtils.getExtension(image.getOriginalFilename());
+        StringBuilder filename = new StringBuilder();
+        if (desiredName.contains(extension)) {
+            filename.append(desiredName, 0, desiredName.indexOf(extension));
+        }
+        filename.append(new Date()).append(".").append(extension);
+        return filename.toString();
     }
 }

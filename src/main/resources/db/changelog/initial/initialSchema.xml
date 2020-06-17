@@ -72,6 +72,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="text"/>
+            <column name="file_name" type="text">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <createTable tableName="image_category" schemaName="content">
@@ -118,4 +121,5 @@
         <createSequence sequenceName="image_metadata_id" schemaName="content" incrementBy="1" startValue="1"/>
 
     </changeSet>
+
 </databaseChangeLog>

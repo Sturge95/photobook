@@ -6,7 +6,6 @@ import com.sturgeon.photobook.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -18,8 +17,8 @@ public class ImageController {
     private ImageService imageService;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadImage(@RequestParam("imageFile") MultipartFile file) throws IOException {
-        imageService.uploadImage(file, new ImageUploadDto());
+    public ResponseEntity<?> uploadImage(@ModelAttribute ImageUploadDto imageUploadDto) throws IOException {
+        imageService.uploadImage(imageUploadDto);
         return ResponseEntity.ok(new MessageResponse("New category created"));
     }
 

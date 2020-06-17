@@ -1,8 +1,11 @@
 package com.sturgeon.photobook.bo;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class ImageUploadDto {
 
     private String imageName;
+    private MultipartFile image;
     private String description;
     private String imageTags;
     private Category category;
@@ -37,5 +40,13 @@ public class ImageUploadDto {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public MultipartFile getImage() {
+        return image;
+    }
+
+    public void setImage(MultipartFile image) {
+        this.image = image;
     }
 }

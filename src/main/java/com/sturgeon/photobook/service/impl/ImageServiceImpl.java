@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
+import com.sturgeon.photobook.bo.Image;
 import com.sturgeon.photobook.bo.ImageMetaData;
 import com.sturgeon.photobook.bo.ImageUploadDto;
 import com.sturgeon.photobook.service.ImageService;
@@ -34,17 +35,23 @@ public class ImageServiceImpl implements ImageService {
     private String unCompressedBucket;
 
     @Override
-    public void uploadImage(MultipartFile multipartFile, ImageUploadDto imageUploadDto) {
+    public void uploadImage(ImageUploadDto imageUploadDto) {
         try {
-            byte[] bytes = multipartFile.getBytes();
-            ByteArrayInputStream image = new ByteArrayInputStream(bytes);
-            int streamLength = bytes.length;
-            Map<String, String> imageData = getImageMetaData(image, streamLength);
+            MultipartFile imageFile = imageUploadDto.getImage();
+            int streamLength = imageFile.getBytes().length;
+
+            ByteArrayInputStream imageInputArray = new ByteArrayInputStream(imageFile.getBytes());
+
+            Image image = createImage(imageUploadDto);
+            Map<String, String> imageData = getImageMetaData(imageInputArray, streamLength);
+            ImageMetaData imageMetaData = MetaDataUtils.createMeteDataObject(imageData);
+            imageMetaData.setImage(image);
+
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(streamLength);
+            s3Client.putObject(unCompressedBucket, image.getFileName(), imageInputArray, objectMetadata);
 
-            //s3Client.putObject(unCompressedBucket, "fileName", image, objectMetadata);
-            ImageMetaData imageMetaData = MetaDataUtils.createMeteDataObject(imageData);
+            //save images and metadata here
         } catch (IOException | ImageProcessingException e) {
             logger.error("could not get bytes from image", e);
         }
@@ -61,6 +68,16 @@ public class ImageServiceImpl implements ImageService {
                 });
         });
         return imageMetadata;
+    }
+
+    private Image createImage(ImageUploadDto imageUploadDto) {
+        String imageName = MetaDataUtils.getFileName(imageUploadDto.getImage(), imageUploadDto.getImageName());
+        Image image = new Image();
+        image.setName(imageUploadDto.getImageName());
+        image.setFileName(imageName);
+        image.setDescription(imageUploadDto.getDescription());
+
+        return image;
     }
 
 
