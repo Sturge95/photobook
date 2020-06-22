@@ -1,6 +1,5 @@
 package com.sturgeon.photobook.service.impl;
 
-import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
@@ -8,6 +7,8 @@ import com.drew.metadata.Metadata;
 import com.sturgeon.photobook.bo.Image;
 import com.sturgeon.photobook.bo.ImageMetaData;
 import com.sturgeon.photobook.bo.ImageUploadDto;
+import com.sturgeon.photobook.repository.ImageRepository;
+import com.sturgeon.photobook.service.ImageMetaDataService;
 import com.sturgeon.photobook.service.ImageService;
 import com.sturgeon.photobook.util.MetaDataUtils;
 import org.slf4j.Logger;
@@ -27,12 +28,19 @@ public class ImageServiceImpl implements ImageService {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageServiceImpl.class);
 
-    @Autowired
-    private AmazonS3 s3Client;
+
     @Value("${s3.buckets.compressed}")
     private String compressedBucket;
     @Value("${s3.buckets.uncompressed}")
     private String unCompressedBucket;
+
+    @Autowired
+    private AmazonClientServiceImpl amazonClientService;
+    @Autowired
+    private ImageRepository imageRepository;
+    @Autowired
+    private ImageMetaDataService imageMetaDataService;
+
 
     @Override
     public void uploadImage(ImageUploadDto imageUploadDto) {
@@ -48,13 +56,19 @@ public class ImageServiceImpl implements ImageService {
             imageMetaData.setImage(image);
 
             ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(streamLength);
-            s3Client.putObject(unCompressedBucket, image.getFileName(), imageInputArray, objectMetadata);
+            objectMetadata.setContentLength(imageInputArray.readAllBytes().length);
 
+            amazonClientService.uploadImage(imageFile, image.getFileName(), unCompressedBucket);
+            imageMetaDataService.saveImageMetadata(imageMetaData);
             //save images and metadata here
         } catch (IOException | ImageProcessingException e) {
             logger.error("could not get bytes from image", e);
         }
+    }
+
+    @Override
+    public void saveImage(Image image) {
+        imageRepository.save(image);
     }
 
     private Map<String, String> getImageMetaData(ByteArrayInputStream image, int streamLength) throws ImageProcessingException, IOException {

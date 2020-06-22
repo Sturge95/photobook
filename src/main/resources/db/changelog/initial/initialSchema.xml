@@ -99,19 +99,19 @@
             <column name="photo_mode" type="text"/>
             <column name="focal_length" type="text"/>
             <column name="date_time" type="timestamp"/>
-            <column name="shutter_speed" type="timestamp"/>
-            <column name="lens" type="timestamp"/>
-            <column name="file_extension" type="timestamp"/>
-            <column name="camera_make" type="timestamp"/>
-            <column name="orientation" type="timestamp"/>
-            <column name="height" type="timestamp"/>
-            <column name="width" type="timestamp"/>
-            <column name="camera_model" type="timestamp"/>
-            <column name="aperture" type="timestamp"/>
-            <column name="compression" type="timestamp"/>
-            <column name="iso" type="timestamp"/>
-            <column name="baseIso" type="timestamp"/>
-            <column name="image_id" type="bigInt">
+            <column name="shutter_speed" type="text"/>
+            <column name="lens" type="text"/>
+            <column name="file_extension" type="text"/>
+            <column name="camera_make" type="text"/>
+            <column name="orientation" type="text"/>
+            <column name="height" type="text"/>
+            <column name="width" type="text"/>
+            <column name="camera_model" type="text"/>
+            <column name="aperture" type="text"/>
+            <column name="compression" type="text"/>
+            <column name="iso" type="text"/>
+            <column name="base_iso" type="text"/>
+            <column name="image_id" type="bigint">
                 <constraints foreignKeyName="content_image_metadata_image" referencedTableSchemaName="content"
                              referencedTableName="image" referencedColumnNames="id"/>
             </column>

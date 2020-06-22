@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/image")
@@ -19,7 +20,12 @@ public class ImageController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadImage(@ModelAttribute ImageUploadDto imageUploadDto) throws IOException {
         imageService.uploadImage(imageUploadDto);
-        return ResponseEntity.ok(new MessageResponse("New category created"));
+        return ResponseEntity.ok(new MessageResponse("New Image Uploaded"));
+    }
+    @PostMapping("/uploads")
+    public ResponseEntity<?> uploadImages(@ModelAttribute List<ImageUploadDto> imageUploadDtos) throws IOException {
+        imageUploadDtos.forEach(imageUploadDto -> imageService.uploadImage(imageUploadDto));
+        return ResponseEntity.ok(new MessageResponse("New Images Uploaded"));
     }
 
 }

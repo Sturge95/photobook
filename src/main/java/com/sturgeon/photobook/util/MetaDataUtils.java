@@ -65,7 +65,7 @@ public class MetaDataUtils {
         if (desiredName.contains(extension)) {
             filename.append(desiredName, 0, desiredName.indexOf(extension));
         }
-        filename.append(new Date()).append(".").append(extension);
+        filename.append(DateUtils.dateFileNameFormat()).append(".").append(extension);
         return filename.toString();
     }
 }
