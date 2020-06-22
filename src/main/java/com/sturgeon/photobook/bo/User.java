@@ -14,9 +14,9 @@ public class User {
     private String email;
     private String password;
     private String username;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(schema = "content", name = "user_role")
-    private List<Role> roles;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(schema = "content", name = "user_roles")
+    private List<Role> role;
 
     public User(String username, String email, String password) {
         this.username = username;
@@ -60,11 +60,11 @@ public class User {
         this.username = username;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public List<Role> getRole() {
+        return role;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setRole(List<Role> role) {
+        this.role = role;
     }
 }
