@@ -1,15 +1,14 @@
 package com.sturgeon.photobook.service.impl;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
-import com.drew.metadata.Metadata;
 import com.sturgeon.photobook.bo.Image;
 import com.sturgeon.photobook.bo.ImageMetaData;
 import com.sturgeon.photobook.bo.ImageUploadDto;
 import com.sturgeon.photobook.repository.ImageRepository;
+import com.sturgeon.photobook.service.ImageCompressionService;
 import com.sturgeon.photobook.service.ImageMetaDataService;
 import com.sturgeon.photobook.service.ImageService;
+import com.sturgeon.photobook.util.FileUtils;
 import com.sturgeon.photobook.util.MetaDataUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -40,27 +38,24 @@ public class ImageServiceImpl implements ImageService {
     private ImageRepository imageRepository;
     @Autowired
     private ImageMetaDataService imageMetaDataService;
-
+    @Autowired
+    private ImageCompressionService imageCompressionService;
 
     @Override
     public void uploadImage(ImageUploadDto imageUploadDto) {
         try {
-            MultipartFile imageFile = imageUploadDto.getImage();
-            int streamLength = imageFile.getBytes().length;
-
-            ByteArrayInputStream imageInputArray = new ByteArrayInputStream(imageFile.getBytes());
+            MultipartFile multipartImageFile = imageUploadDto.getImage();
 
             Image image = createImage(imageUploadDto);
-            Map<String, String> imageData = getImageMetaData(imageInputArray, streamLength);
-            ImageMetaData imageMetaData = MetaDataUtils.createMeteDataObject(imageData);
-            imageMetaData.setImage(image);
+            ImageMetaData imageMetaData = createImageMetadata(multipartImageFile, image);
 
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(imageInputArray.readAllBytes().length);
+            File imageFile = FileUtils.convert(multipartImageFile);
+            File compressedImage = imageCompressionService.compressImage(imageFile, imageMetaData.getFileExtension());
 
             amazonClientService.uploadImage(imageFile, image.getFileName(), unCompressedBucket);
+            amazonClientService.uploadImage(compressedImage, image.getFileName(), compressedBucket);
+
             imageMetaDataService.saveImageMetadata(imageMetaData);
-            //save images and metadata here
         } catch (IOException | ImageProcessingException e) {
             logger.error("could not get bytes from image", e);
         }
@@ -71,21 +66,17 @@ public class ImageServiceImpl implements ImageService {
         imageRepository.save(image);
     }
 
-    private Map<String, String> getImageMetaData(ByteArrayInputStream image, int streamLength) throws ImageProcessingException, IOException {
-        Metadata metadata = ImageMetadataReader.readMetadata(image, streamLength);
-        Map<String, String> imageMetadata = new HashMap<>();
-        metadata.getDirectories().forEach(directory -> {
-            String directoryName = directory.getName();
-            if (!directoryName.equals("xmp") && !directoryName.equals("Interoperability") && !directoryName.equals("GPS") && !directoryName.equals("Exif Thumbnail"))
-                directory.getTags().forEach(tag -> {
-                    imageMetadata.put(tag.getTagName(), tag.getDescription());
-                });
-        });
-        return imageMetadata;
+    private ImageMetaData createImageMetadata(MultipartFile multipartImageFile, Image image) throws ImageProcessingException, IOException {
+        int streamLength = multipartImageFile.getBytes().length;
+        ByteArrayInputStream imageInputArray = new ByteArrayInputStream(multipartImageFile.getBytes());
+        ImageMetaData imageMetaData = MetaDataUtils.getImageMetaData(imageInputArray, streamLength);
+        imageMetaData.setImage(image);
+
+        return imageMetaData;
     }
 
     private Image createImage(ImageUploadDto imageUploadDto) {
-        String imageName = MetaDataUtils.getFileName(imageUploadDto.getImage(), imageUploadDto.getImageName());
+        String imageName = FileUtils.getFileName(imageUploadDto.getImage(), imageUploadDto.getImageName());
         Image image = new Image();
         image.setName(imageUploadDto.getImageName());
         image.setFileName(imageName);
@@ -93,6 +84,5 @@ public class ImageServiceImpl implements ImageService {
 
         return image;
     }
-
 
 }

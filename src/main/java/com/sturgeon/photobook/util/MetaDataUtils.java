@@ -1,22 +1,39 @@
 package com.sturgeon.photobook.util;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Metadata;
 import com.sturgeon.photobook.bo.ImageMetaData;
 import com.sturgeon.photobook.constants.MetaDataConstants;
-import liquibase.util.file.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MetaDataUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(MetaDataUtils.class);
 
-    public static ImageMetaData createMeteDataObject(Map<String, String> imageData) {
+    public static ImageMetaData getImageMetaData(ByteArrayInputStream image, int streamLength) throws ImageProcessingException, IOException {
+        Metadata metadata = ImageMetadataReader.readMetadata(image, streamLength);
+        Map<String, String> imageMetadata = new HashMap<>();
+        metadata.getDirectories().forEach(directory -> {
+            String directoryName = directory.getName();
+            if (!directoryName.equals("xmp") && !directoryName.equals("Interoperability") && !directoryName.equals("GPS") && !directoryName.equals("Exif Thumbnail"))
+                directory.getTags().forEach(tag -> {
+                    imageMetadata.put(tag.getTagName(), tag.getDescription());
+                });
+        });
+        return createMeteDataObject(imageMetadata);
+    }
+
+    private static ImageMetaData createMeteDataObject(Map<String, String> imageData) {
         ImageMetaData imageMetaData = new ImageMetaData();
         imageMetaData.setFlash(getFieldData(imageData, MetaDataConstants.FLASH));
         imageMetaData.setDigitalZoom(getFieldData(imageData, MetaDataConstants.DIGITAL_ZOOM));
@@ -59,13 +76,4 @@ public class MetaDataUtils {
         return null;
     }
 
-    public static String getFileName(MultipartFile image, String desiredName) {
-        String extension = FilenameUtils.getExtension(image.getOriginalFilename());
-        StringBuilder filename = new StringBuilder();
-        if (desiredName.contains(extension)) {
-            filename.append(desiredName, 0, desiredName.indexOf(extension));
-        }
-        filename.append(DateUtils.dateFileNameFormat()).append(".").append(extension);
-        return filename.toString();
-    }
 }

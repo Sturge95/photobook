@@ -9,7 +9,7 @@ public class Image {
 
     @Id
     @GeneratedValue(generator = "content.image_id", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "image_id", schema = "content", sequenceName = "image_id", allocationSize = 1)
+    @SequenceGenerator(name = "image_id", schema = "content", sequenceName = "content.image_id", allocationSize = 1)
     private Long id;
     private String name;
     private String description;

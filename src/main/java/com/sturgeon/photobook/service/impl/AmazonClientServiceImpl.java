@@ -18,12 +18,7 @@ public class AmazonClientServiceImpl implements AmazonClientService {
     private AmazonS3 s3Client;
 
     @Override
-    public void uploadImage(MultipartFile multipartFile, String fileName, String bucketName) throws IOException {
-        File file = new File(fileName);
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.write(multipartFile.getBytes());
-        fos.close();
-
+    public void uploadImage(File file, String fileName, String bucketName) throws IOException {
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileName, file);
 
         s3Client.putObject(putObjectRequest);
